@@ -18,7 +18,8 @@ namespace LaserLogistics.Patches
         static bool OpenLaserNodeUI(in MachineInstanceRef<InserterInstance> newInserterRef) {
             if(newInserterRef.Get().myDef.displayName != Names.Items.laserNode) return true;
 
-            LaserNodeGUI.Open(newInserterRef.instanceId);
+            //LaserNodeGUI.Open(newInserterRef.instanceId);
+            NewLaserNodeGUI.ShowForLaserNode(newInserterRef.instanceId);
             return false;
         }
     }

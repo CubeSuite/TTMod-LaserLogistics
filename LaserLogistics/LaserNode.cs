@@ -13,12 +13,14 @@ namespace LaserLogistics
     internal class LaserNode {
         // Objects & Variables
         internal uint instanceId;
+        internal int index;
         internal int powerConsumption;
         internal bool showRange;
         internal int red = LaserLogisticsPlugin.defaultRed.Value;
         internal int green = LaserLogisticsPlugin.defaultGreen.Value;
         internal int blue = LaserLogisticsPlugin.defaultBlue.Value;
         internal Vector3 center;
+        internal byte strata;
 
         internal int numSpeedUpgrades;
         internal int numStackUpgrades;
@@ -166,6 +168,7 @@ namespace LaserLogistics
         // Update Functions
 
         internal void DoUpdate(float dt) {
+            HideInserterVisuals();
             sSinceLastLaser += dt;
             dt = DoPowerUpdate(dt);
             DoModulesUpdate(dt);
@@ -361,7 +364,7 @@ namespace LaserLogistics
         private bool DoExpanderUpdate(ref ExpanderModule expander) {
             if (expander.filters.Count == 0) return false;
             
-            ResourceInfo filteredItem = ModUtils.GetResourceInfoByName(expander.filters[0]);
+            ResourceInfo filteredItem = EMU.Resources.GetResourceInfoByName(expander.filters[0]);
             if (!QuantumStorageNetwork.IsItemInNetwork(filteredItem)) return false;
             if (!buffer.isEmpty && buffer.id != filteredItem.uniqueId) return false;
 
@@ -407,6 +410,13 @@ namespace LaserLogistics
         }
 
         // Private Functions
+
+        private void HideInserterVisuals() {
+            InserterMachineList list = (InserterMachineList)MachineManager.instance.GetMachineList(MachineTypeEnum.Inserter);
+            if(list.TryGetVisualIndex(index, out int visualsIndex)) {
+                list.visualsList[visualsIndex].commonData.showGPUIMeshes = false;
+            }
+        }
 
         private void SetMaxPowerDraw() {
             int maxPower = 0;
@@ -507,9 +517,11 @@ namespace LaserLogistics
             
             if (sSinceLastLaser > LaserLogisticsPlugin.laserCooldown.Value) {
                 nextLaserColour = GetLaserColour();
+                Debug.Log($"Shooting Laser from {inventoryPos} to {center}");
                 LaserGunTool.ShowShot(new ShootInfo() {
                     origin = inventoryPos,
                     target = center,
+                    strata = strata
                 });
                 
                 return true;

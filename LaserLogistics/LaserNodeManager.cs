@@ -1,4 +1,5 @@
-﻿using EquinoxsModUtils.Additions;
+﻿using EquinoxsModUtils;
+using EquinoxsModUtils.Additions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,7 +19,13 @@ namespace LaserLogistics
         // Public Functions
 
         internal static void CreateNewNode(MachineInstanceRef<InserterInstance> instRef) {
-            LaserNode node = new LaserNode() { instanceId = instRef.instanceId, center = instRef.gridInfo.Center };
+            LaserNode node = new LaserNode() { 
+                instanceId = instRef.instanceId, 
+                index = instRef.index, 
+                center = instRef.gridInfo.Center,
+                strata = instRef.gridInfo.strata
+            };
+
             node.Initialise();
             nodes.Add(instRef.instanceId, node);
 

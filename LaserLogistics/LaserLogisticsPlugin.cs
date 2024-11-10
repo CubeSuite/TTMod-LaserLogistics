@@ -10,6 +10,7 @@ using System;
 using LaserLogistics.Patches;
 using EquinoxsDebuggingTools;
 using System.Reflection;
+using CasperEquinoxGUI;
 
 namespace LaserLogistics
 {
@@ -42,9 +43,10 @@ namespace LaserLogistics
             ApplyPatches();
             LoadPrefabs();
 
-            ModUtils.GameDefinesLoaded += OnGameDefinesLoaded;
-            ModUtils.SaveStateLoaded += OnSaveStateLoaded;
-            ModUtils.GameSaved += OnGameSaved;
+            EMU.Events.GameDefinesLoaded += OnGameDefinesLoaded;
+            EMU.Events.SaveStateLoaded += OnSaveStateLoaded;
+            EMU.Events.GameSaved += OnGameSaved;
+            CaspuinoxGUI.ReadyForGUI += OnReadyForGUI;
 
             ContentAdder.AddHeaders();
             ContentAdder.AddUnlocks();
@@ -70,44 +72,51 @@ namespace LaserLogistics
         }
 
         private void Update() {
+            NewLaserNodeGUI.HandleKeyPresses();
             LaserNodeGUI.TrackTime(Time.deltaTime);
+            NewLaserNodeGUI.TrackTime(Time.deltaTime);
             PositionMemoryTablet.instance.sSincePositionAdded += Time.deltaTime;
         }
 
         private void LateUpdate() {
-            EDT.SetPacedLogDelay(1f);
+            //EDT.SetPacedLogDelay(1f);
         }
 
         private void OnGUI() {
             if (!Images.initialised) Images.InitialiseStyles();
-            if (!ModUtils.hasGameLoaded) return;
+            if (!EMU.LoadingStates.hasGameLoaded) return;
             LaserNodeGUI.Draw();
             PositionMemoryTabletGUI.Draw();
+            NewLaserNodeGUI.DrawItemInHand();
         }
 
         // Events
 
-        private void OnGameDefinesLoaded(object sender, EventArgs e) {
+        private void OnReadyForGUI() {
+            NewLaserNodeGUI.CreateWindow();
+        }
+
+        private void OnGameDefinesLoaded() {
             LaserNodeGUI.LoadResourceInfosToCache();
         }
 
         private void OnSaveStateLoaded(object sender, EventArgs e) {
-            ResIDs.pullerModule = ModUtils.GetResourceIDByName(Names.Items.pullerModule);
-            ResIDs.pusherModule = ModUtils.GetResourceIDByName(Names.Items.pusherModule);
-            ResIDs.collectorModule = ModUtils.GetResourceIDByName(Names.Items.collectorModule);
-            ResIDs.distributorModule = ModUtils.GetResourceIDByName(Names.Items.distributorModule);
-            ResIDs.voidModule = ModUtils.GetResourceIDByName(Names.Items.voidModule);
-            ResIDs.compressorModule = ModUtils.GetResourceIDByName(Names.Items.compressorModule);
-            ResIDs.expanderModule = ModUtils.GetResourceIDByName(Names.Items.expanderModule);
+            ResIDs.pullerModule = EMU.Resources.GetResourceIDByName(Names.Items.pullerModule);
+            ResIDs.pusherModule = EMU.Resources.GetResourceIDByName(Names.Items.pusherModule);
+            ResIDs.collectorModule = EMU.Resources.GetResourceIDByName(Names.Items.collectorModule);
+            ResIDs.distributorModule = EMU.Resources.GetResourceIDByName(Names.Items.distributorModule);
+            ResIDs.voidModule = EMU.Resources.GetResourceIDByName(Names.Items.voidModule);
+            ResIDs.compressorModule = EMU.Resources.GetResourceIDByName(Names.Items.compressorModule);
+            ResIDs.expanderModule = EMU.Resources.GetResourceIDByName(Names.Items.expanderModule);
 
-            ResIDs.rangeUpgrade = ModUtils.GetResourceIDByName(Names.Items.rangeUpgrade);
-            ResIDs.infiniteRangeUpgrade = ModUtils.GetResourceIDByName(Names.Items.infiniteRangeUpgrade);
-            ResIDs.speedUpgrade = ModUtils.GetResourceIDByName(Names.Items.speedUpgrade);
-            ResIDs.stackUpgrade = ModUtils.GetResourceIDByName(Names.Items.stackUpgrade);
+            ResIDs.rangeUpgrade = EMU.Resources.GetResourceIDByName(Names.Items.rangeUpgrade);
+            ResIDs.infiniteRangeUpgrade = EMU.Resources.GetResourceIDByName(Names.Items.infiniteRangeUpgrade);
+            ResIDs.speedUpgrade = EMU.Resources.GetResourceIDByName(Names.Items.speedUpgrade);
+            ResIDs.stackUpgrade = EMU.Resources.GetResourceIDByName(Names.Items.stackUpgrade);
 
             QuantumStorageNetwork.Load();
             PositionMemoryTablet.instance.Load();
-            LaserNodeManager.Load();
+            //LaserNodeManager.Load();
         }
 
         private void OnGameSaved(object sender, EventArgs e) {

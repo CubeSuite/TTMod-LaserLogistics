@@ -31,12 +31,12 @@ namespace LaserLogistics
             GenericMachineInstanceRef machine = (GenericMachineInstanceRef)targetMachineInfo.GetValue(Player.instance.interaction);
 
             if (!machine.IsValid()) {
-                ModUtils.Notify("Not a machine");
+                EMU.Notify("Not a machine");
                 return;
             }
 
             if(machine.GetInventoriesList().Count() == 0) {
-                ModUtils.Notify("Machine has no inventories");
+                EMU.Notify("Machine has no inventories");
                 return;
             }
 
@@ -46,12 +46,12 @@ namespace LaserLogistics
                     return;
                 }
 
-                ModUtils.Notify("Already saved this location");
+                EMU.Notify("Already saved this location");
                 return;
             }
             
             if(savedMachines.Count == 8) {
-                ModUtils.Notify("Can't save > 8 locations");
+                EMU.Notify("Can't save > 8 locations");
                 return;
             }
 
@@ -88,7 +88,7 @@ namespace LaserLogistics
         }
 
         public override void OnUpdate(bool isSelected) {
-            GameObject scanner = (GameObject)ModUtils.GetPrivateField("mainObj", Player.instance.equipment.GetEquipment<Scanner>());
+            GameObject scanner = (GameObject)EMU.GetPrivateField("mainObj", Player.instance.equipment.GetEquipment<Scanner>());
             if (scanner == null) return;
             scanner.SetActive(isSelected);
             

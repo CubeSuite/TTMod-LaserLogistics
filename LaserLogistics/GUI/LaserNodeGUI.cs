@@ -89,7 +89,7 @@ namespace LaserLogistics
             greenString = currentNode.green.ToString();
             blueString = currentNode.blue.ToString(); 
             shouldShow = true;
-            ModUtils.FreeCursor(true);
+            EMU.FreeCursor(true);
             sSinceOpen = 0;
 
             PlayAudio("event:/SFX/Machine SFX/Machine Open");
@@ -105,14 +105,14 @@ namespace LaserLogistics
             if (sSinceOpen < 0.2f) return;
 
             shouldShow = false;
-            ModUtils.FreeCursor(false);
+            EMU.FreeCursor(false);
             sSinceClose = 0;
 
             currentNode = null;
             currentModule = null;
 
             if(!string.IsNullOrEmpty(itemInHand)) {
-                inventory.AddResources(ModUtils.GetResourceIDByName(itemInHand), 1);
+                inventory.AddResources(EMU.Resources.GetResourceIDByName(itemInHand), 1);
                 itemInHand = "";
             }
 
@@ -137,7 +137,7 @@ namespace LaserLogistics
 
         private static void DrawTablet() {
             guiStartX = (Screen.width - Images.LaserNodeGUI.background.width) / 2f;
-            guiStartY = ((Screen.height - Images.LaserNodeGUI.background.height) / 2f) + 40f;
+            guiStartY = Screen.height - 1157;
 
             Images.LaserNodeGUI.shaderTile.Draw(0, 0, Screen.width, Screen.height);
             Images.LaserNodeGUI.background.Draw(guiStartX, guiStartY);
@@ -252,7 +252,7 @@ namespace LaserLogistics
                     PlayAudio("event:/SFX/UI SFX/Building UI SFX/Build Error");
 
                     if (UnityInput.Current.GetKey(KeyCode.LeftShift)) {
-                        inventory.AddResources(ModUtils.GetResourceIDByName(module.name), 1);
+                        inventory.AddResources(EMU.Resources.GetResourceIDByName(module.name), 1);
                     }
                     else {
                         itemInHand = module.name;
@@ -264,7 +264,7 @@ namespace LaserLogistics
         private static void DrawBuffer() {
             if (currentNode.buffer.isEmpty) return;
 
-            Texture2D itemImage = ModUtils.GetImageForResource(currentNode.buffer.id);
+            Texture2D itemImage = EMU.Images.GetImageForResource(SaveState.GetResInfoFromId(currentNode.buffer.id).displayName);
             Rect rect = new Rect(guiStartX + 1016, guiStartY + 204, 30, 30);
             GUI.Box(rect, "", new GUIStyle() { normal = { background = itemImage } });
             GUI.Label(rect, currentNode.buffer.count.ToString(), countLabelStyle);
@@ -408,13 +408,13 @@ namespace LaserLogistics
                     }
                     else {
                         itemInHand = name;
-                        inventory.TryRemoveResources(ModUtils.GetResourceIDByName(name), 1);
+                        inventory.TryRemoveResources(EMU.Resources.GetResourceIDByName(name), 1);
                         EDT.Log("GUI.InventoryModules", $"Moving {name} into hand");
                     }
                 }
                 else {
                     itemInHand = "";
-                    inventory.AddResources(ModUtils.GetResourceIDByName(name), 1);
+                    inventory.AddResources(EMU.Resources.GetResourceIDByName(name), 1);
                     EDT.Log("GUI.InventoryModules", $"Moving {name} into inventory");
                 }
             }
@@ -694,7 +694,7 @@ namespace LaserLogistics
                 case Names.Items.rangeUpgrade: return Images.Upgrades.rangeUpgrade.style;
                 case Names.Items.infiniteRangeUpgrade: return Images.Upgrades.infiniteRangeUpgrade.style;
 
-                default: return new GUIStyle() { normal = { background = ModUtils.GetImageForResource(item) } };
+                default: return new GUIStyle() { normal = { background = EMU.Images.GetImageForResource(item) } };
             }
         }
 
@@ -725,7 +725,7 @@ namespace LaserLogistics
             if (mouseX < 616 || mouseX > 1759) return;
             if (mouseY < 541 || mouseY > 901) return;
 
-            inventory.AddResources(ModUtils.GetResourceIDByName(itemInHand), 1);
+            inventory.AddResources(EMU.Resources.GetResourceIDByName(itemInHand), 1);
             itemInHand = "";
             
             sSinceGuiInteract = 0f;
@@ -820,7 +820,7 @@ namespace LaserLogistics
 
             if(currentModule.name != Names.Items.expanderModule || currentModule.filters.Count == 0) {
                 currentModule.filters.Add(itemInHand);
-                inventory.AddResources(ModUtils.GetResourceIDByName(itemInHand), 1);
+                inventory.AddResources(EMU.Resources.GetResourceIDByName(itemInHand), 1);
                 EDT.Log("GUI.InventoryModules", $"Placed {itemInHand} into filters");
                 itemInHand = "";
                 sSinceGuiInteract = 0f;
@@ -836,10 +836,10 @@ namespace LaserLogistics
 
         private static void HandleShiftClickModuleIntoNode(string item) {
             if (!currentNode.GetFirstEmptySlot(out int index)) return;
-            if (!inventory.HasAnyOfResource(ModUtils.GetResourceIDByName(item))) return;
+            if (!inventory.HasAnyOfResource(EMU.Resources.GetResourceIDByName(item))) return;
 
             currentNode.AddModule(item, index);
-            inventory.TryRemoveResources(ModUtils.GetResourceIDByName(item), 1);
+            inventory.TryRemoveResources(EMU.Resources.GetResourceIDByName(item), 1);
             PlayAudio("event:/SFX/UI SFX/Building UI SFX/Build Click");
         }
 
@@ -852,12 +852,12 @@ namespace LaserLogistics
             }
 
             count = Mathf.Min(count, max);
-            count = Mathf.Min(count, inventory.GetResourceCount(ModUtils.GetResourceIDByName(item)));
+            count = Mathf.Min(count, inventory.GetResourceCount(EMU.Resources.GetResourceIDByName(item)));
 
             if (count == 0) return;
 
             currentNode.AddUpgrade(item, count);
-            inventory.TryRemoveResources(ModUtils.GetResourceIDByName(item), count);
+            inventory.TryRemoveResources(EMU.Resources.GetResourceIDByName(item), count);
 
             PlayAudio("event:/SFX/UI SFX/Building UI SFX/Build Click");
         }
@@ -872,7 +872,7 @@ namespace LaserLogistics
 
         private static void HandleRightClick() {
             if(UnityInput.Current.GetMouseButtonDown(1) && !string.IsNullOrEmpty(itemInHand)) {
-                inventory.AddResources(ModUtils.GetResourceIDByName(itemInHand), 1);
+                inventory.AddResources(EMU.Resources.GetResourceIDByName(itemInHand), 1);
                 itemInHand = "";
                 PlayAudio("event:/SFX/UI SFX/Building UI SFX/Build Error");
             }
