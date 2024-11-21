@@ -37,6 +37,8 @@ namespace LaserLogistics
             public const string infiniteRangeUpgrade = "Infinite Range Upgrade";
             public const string speedUpgrade = "Speed Upgrade";
             public const string stackUpgrade = "Stack Upgrade";
+
+            public const string qsnDownload = "QSN Download";
         }
     }
 }

@@ -28,17 +28,17 @@ namespace LaserLogistics
                 coreTypeNeeded = ResearchCoreDefinition.CoreType.Purple,
                 coreCountNeeded = 20,
                 treePosition = 20,
-                // ToDo: LaserNode Unlock Sprite
+                sprite = Images.laserNode.sprite
             });
 
             EMUAdditions.AddNewUnlock(new NewUnlockDetails() {
                 displayName = Names.Unlocks.voidModule,
                 description = "Destroys the item stack stored in the Laser Node",
                 category = Unlock.TechCategory.Logistics,
-                requiredTier = TechTreeState.ResearchTier.Tier7,
+                requiredTier = TechTreeState.ResearchTier.Tier5,
                 coreTypeNeeded = ResearchCoreDefinition.CoreType.Purple,
                 coreCountNeeded = 50,
-                treePosition = 20,
+                treePosition = 40,
                 sprite = Images.Modules.voidModule.sprite
             });
 
@@ -46,9 +46,9 @@ namespace LaserLogistics
                 displayName = Names.Unlocks.advancedModules,
                 description = "Unlocks modules that can interact with up to 8 inventories at once",
                 category = Unlock.TechCategory.Logistics,
-                requiredTier = TechTreeState.ResearchTier.Tier9,
-                coreTypeNeeded = ResearchCoreDefinition.CoreType.Green,
-                coreCountNeeded = 100,
+                requiredTier = TechTreeState.ResearchTier.Tier15,
+                coreTypeNeeded = ResearchCoreDefinition.CoreType.Blue,
+                coreCountNeeded = 400,
                 treePosition = 20,
                 sprite = Images.Modules.distributorModule.sprite
             });
@@ -57,7 +57,7 @@ namespace LaserLogistics
                 displayName = Names.Unlocks.quantumModules,
                 description = "Unlocks the Quantum Storage Network",
                 category = Unlock.TechCategory.Logistics,
-                requiredTier = TechTreeState.ResearchTier.Tier10,
+                requiredTier = TechTreeState.ResearchTier.Tier20,
                 coreTypeNeeded = ResearchCoreDefinition.CoreType.Green,
                 coreCountNeeded = 200,
                 treePosition = 40,
@@ -68,10 +68,10 @@ namespace LaserLogistics
                 displayName = Names.Unlocks.rangeUpgrade,
                 description = $"Increases the range of the Laser Node by {Settings.rangeUpgradeAmount}",
                 category = Unlock.TechCategory.Logistics,
-                requiredTier = TechTreeState.ResearchTier.Tier6,
-                coreTypeNeeded = ResearchCoreDefinition.CoreType.Green,
+                requiredTier = TechTreeState.ResearchTier.Tier7,
+                coreTypeNeeded = ResearchCoreDefinition.CoreType.Blue,
                 coreCountNeeded = 25,
-                treePosition = 20,
+                treePosition = 40,
                 sprite = Images.Upgrades.rangeUpgrade.sprite
             });
 
@@ -80,9 +80,9 @@ namespace LaserLogistics
                 description = "Allows for unlimited range",
                 category = Unlock.TechCategory.Logistics,
                 requiredTier = TechTreeState.ResearchTier.Tier10,
-                coreTypeNeeded = ResearchCoreDefinition.CoreType.Green,
-                coreCountNeeded = 200,
-                treePosition = 20,
+                coreTypeNeeded = ResearchCoreDefinition.CoreType.Blue,
+                coreCountNeeded = 500,
+                treePosition = 40,
                 sprite = Images.Upgrades.infiniteRangeUpgrade.sprite
             });
 
@@ -90,10 +90,10 @@ namespace LaserLogistics
                 displayName = Names.Unlocks.speedUpgrade,
                 description = $"Decreases the delay between tasks by {Settings.speedUpgradeAmount}s",
                 category = Unlock.TechCategory.Logistics,
-                requiredTier = TechTreeState.ResearchTier.Tier5,
+                requiredTier = TechTreeState.ResearchTier.Tier6,
                 coreTypeNeeded = ResearchCoreDefinition.CoreType.Purple,
                 coreCountNeeded = 50,
-                treePosition = 20,
+                treePosition = 40,
                 sprite = Images.Upgrades.speedUpgrade.sprite
             });
 
@@ -101,11 +101,23 @@ namespace LaserLogistics
                 displayName = Names.Unlocks.stackUpgrade,
                 description = $"Increases the items transferred per task by {Settings.stackUpgradeAmount}",
                 category = Unlock.TechCategory.Logistics,
-                requiredTier = TechTreeState.ResearchTier.Tier8,
+                requiredTier = TechTreeState.ResearchTier.Tier17,
                 coreTypeNeeded = ResearchCoreDefinition.CoreType.Green,
-                coreCountNeeded = 50,
+                coreCountNeeded = 100,
                 treePosition = 20,
                 sprite = Images.Upgrades.stackUpgrade.sprite
+            });
+
+            EMUAdditions.AddNewUnlock(new NewUnlockDetails() {
+                displayName = Names.Unlocks.qsnDownload,
+                description = $"Maintain  up to 1 stack of each buildable from your Quantum Storage Network",
+                category = Unlock.TechCategory.Logistics,
+                requiredTier = TechTreeState.ResearchTier.Tier21,
+                coreTypeNeeded = ResearchCoreDefinition.CoreType.Gold,
+                coreCountNeeded = 200,
+                treePosition = 40,
+                sprite = Images.qsnDownload.sprite,
+                dependencyNames = new List<string>() { Names.Unlocks.quantumModules }
             });
         }
 
@@ -160,7 +172,8 @@ namespace LaserLogistics
                 maxStackCount = 500,
                 sortPriority = 0,
                 unlockName = Names.Unlocks.laserNodes,
-                parentName = EMU.Names.Resources.FilterInserter
+                parentName = EMU.Names.Resources.FilterInserter,
+                sprite = Images.laserNode.sprite
             };
 
             InserterDefinition laserNodeDefinition;

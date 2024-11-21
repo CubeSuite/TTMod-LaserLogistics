@@ -100,15 +100,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentAdder.cs" />
-    <Compile Include="Controls\FilterButton.cs" />
-    <Compile Include="Controls\InventoryItemButton.cs" />
-    <Compile Include="Controls\ItemsSubPanel.cs" />
-    <Compile Include="Controls\LaserNodeWindow.cs" />
-    <Compile Include="Controls\ConfigButton.cs" />
-    <Compile Include="Controls\ModuleButton.cs" />
-    <Compile Include="Controls\SavedPositionPanel.cs" />
-    <Compile Include="GUI\LaserNodeGUI.cs" />
-    <Compile Include="GUI\PositionMemoryTabletGUI.cs" />
+    <Compile Include="LaserLogisticsGUI\Controls\BufferIcon.cs" />
+    <Compile Include="LaserLogisticsGUI\Controls\FilterButton.cs" />
+    <Compile Include="LaserLogisticsGUI\Controls\InventoryItemButton.cs" />
+    <Compile Include="LaserLogisticsGUI\Controls\ItemsSubPanel.cs" />
+    <Compile Include="LaserLogisticsGUI\Controls\LaserNodeWindow.cs" />
+    <Compile Include="LaserLogisticsGUI\Controls\ConfigButton.cs" />
+    <Compile Include="LaserLogisticsGUI\Controls\ModuleButton.cs" />
+    <Compile Include="LaserLogisticsGUI\Controls\SavedPositionPanel.cs" />
+    <Compile Include="LaserLogisticsGUI\Controls\UpgradeButton.cs" />
+    <Compile Include="LaserLogisticsGUI\LaserNode\LaserNodeGUI.cs" />
+    <Compile Include="LaserLogisticsGUI\LaserNode\Panels\InventoryPanel.cs" />
+    <Compile Include="LaserLogisticsGUI\LaserNode\Panels\ItemsPanel.cs" />
+    <Compile Include="LaserLogisticsGUI\LaserNode\Panels\MainPanel.cs" />
+    <Compile Include="LaserLogisticsGUI\LaserNode\Panels\ModuleSettingsPanel.cs" />
+    <Compile Include="LaserLogisticsGUI\LaserNode\Panels\SavedPositionsPanel.cs" />
+    <Compile Include="LaserLogisticsGUI\LaserNode\Panels\StatsColourPanel.cs" />
+    <Compile Include="LaserLogisticsGUI\PositionMemoryTabletGUI.cs" />
     <Compile Include="Images.cs" />
     <Compile Include="LaserNode.cs" />
     <Compile Include="LaserNodeManager.cs" />
@@ -122,8 +130,9 @@
     <Compile Include="Modules\VoidModule.cs" />
     <Compile Include="Names.cs" />
     <Compile Include="LaserLogisticsPlugin.cs" />
-    <Compile Include="NewLaserNodeGUI.cs" />
+    <Compile Include="LaserLogisticsGUI\LaserNode\NewLaserNodeGUI.cs" />
     <Compile Include="Patches\FilterInserterUIPatch.cs" />
+    <Compile Include="Patches\FlowManagerPatch.cs" />
     <Compile Include="Patches\InserterDefinitionPatch.cs" />
     <Compile Include="Patches\InserterInstancePatch.cs" />
     <Compile Include="Patches\TeamVisualsPatch.cs" />
@@ -145,13 +154,6 @@
     <EmbeddedResource Include="Images\LaserNodeGUI\Shader.png" />
     <EmbeddedResource Include="Images\Modules\CollectorModule.png" />
     <EmbeddedResource Include="Images\Modules\CompressorModule.png" />
-    <EmbeddedResource Include="Images\Modules\Dim\Collector.png" />
-    <EmbeddedResource Include="Images\Modules\Dim\Compressor.png" />
-    <EmbeddedResource Include="Images\Modules\Dim\Distributor.png" />
-    <EmbeddedResource Include="Images\Modules\Dim\Expander.png" />
-    <EmbeddedResource Include="Images\Modules\Dim\PullerModule.png" />
-    <EmbeddedResource Include="Images\Modules\Dim\PusherModule.png" />
-    <EmbeddedResource Include="Images\Modules\Dim\VoidModule.png" />
     <EmbeddedResource Include="Images\Modules\DistributorModule.png" />
     <EmbeddedResource Include="Images\Modules\ExpanderModule.png" />
     <EmbeddedResource Include="Images\Modules\PullerModule.png" />
@@ -166,10 +168,6 @@
     <EmbeddedResource Include="Images\PMTGUI\Tablet.png" />
     <EmbeddedResource Include="Images\PMTGUI\TabletOnly.png" />
     <EmbeddedResource Include="Images\PMTGUI\Thumb.png" />
-    <EmbeddedResource Include="Images\Upgrades\Dim\InfiniteRange.png" />
-    <EmbeddedResource Include="Images\Upgrades\Dim\Range.png" />
-    <EmbeddedResource Include="Images\Upgrades\Dim\SpeedUpgrade.png" />
-    <EmbeddedResource Include="Images\Upgrades\Dim\Stack.png" />
     <EmbeddedResource Include="Images\Upgrades\InfiniteRangeUpgrade.png" />
     <EmbeddedResource Include="Images\Upgrades\RangeUpgrade.png" />
     <EmbeddedResource Include="Images\Upgrades\SpeedUpgrade.png" />
@@ -203,6 +201,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\LaserNodeGUI\BigArrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\LaserNode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\QsnDownload.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,11 +1,16 @@
-﻿using EquinoxsDebuggingTools;
+﻿using BepInEx;
+using EquinoxsDebuggingTools;
 using EquinoxsModUtils;
 using EquinoxsModUtils.Additions;
+using FIMSpace.Generating.Rules.Transforming.Legacy;
 using FluffyUnderware.DevTools.Extensions;
 using LaserLogistics.Modules;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Runtime.InteropServices.WindowsRuntime;
+using ToolBuddy.ThirdParty.VectorGraphics;
+using Unity.Collections;
 using UnityEngine;
 
 namespace LaserLogistics
@@ -16,9 +21,7 @@ namespace LaserLogistics
         internal int index;
         internal int powerConsumption;
         internal bool showRange;
-        internal int red = LaserLogisticsPlugin.defaultRed.Value;
-        internal int green = LaserLogisticsPlugin.defaultGreen.Value;
-        internal int blue = LaserLogisticsPlugin.defaultBlue.Value;
+        
         internal Vector3 center;
         internal byte strata;
 
@@ -35,16 +38,52 @@ namespace LaserLogistics
 
         internal static GameObject prefab;
         internal static Color nextLaserColour;
-        private Color colour => new Color(red / 255f, green / 255f, blue / 255f);
 
         private float sUntilNextTask;
         private float sSinceLastLaser;
         private bool lastTaskSuccessful = true;
 
+        // Properties
+
+        private int red = LaserLogisticsPlugin.defaultRed.Value;
+        internal int Red {
+            get => red;
+            set {
+                red = value;
+                Colour = new Color(red / 255f, green / 255f, blue / 255f);
+            }
+        }
+
+        private int green = LaserLogisticsPlugin.defaultGreen.Value;
+        internal int Green {
+            get => green;
+            set {
+                green = value;
+                Colour = new Color(red / 255f, green / 255f, blue / 255f);
+            }
+        }
+        
+        private int blue = LaserLogisticsPlugin.defaultBlue.Value;
+        internal int Blue {
+            get => blue;
+            set {
+                blue = value;
+                Colour = new Color(red / 255f, green / 255f, blue / 255f);
+            }
+        }
+
+        private Color colour;
+        internal Color Colour {
+            get => colour;
+            private set {
+                colour = value;
+                LaserNodeManager.UpdateNodeColour(instanceId, colour);
+            }
+        }
+
         // Internal Functions
 
         internal void Initialise() {
-            EMUAdditions.CustomData.Add(instanceId, "serialised", "");
             for (int i = 0; i < modules.Length; i++) modules[i] = null;
         }
 
@@ -168,6 +207,7 @@ namespace LaserLogistics
         // Update Functions
 
         internal void DoUpdate(float dt) {
+            Save();
             HideInserterVisuals();
             sSinceLastLaser += dt;
             dt = DoPowerUpdate(dt);
@@ -215,67 +255,78 @@ namespace LaserLogistics
 
         // Data Functions
 
-        private string Serialise() {
-            string serial = $"{red}/{green}/{blue}/{center}/{numSpeedUpgrades}/{numStackUpgrades}/{numRangeUpgrades}/{infiniteRangeUpgrade}/{buffer.id}/{buffer.count}/{buffer.maxStack}/{string.Join(",", activeSlots)}/{currentModuleIndex}/{sUntilNextTask}/{sSinceLastLaser}";
-            foreach(Module module in modules) {
-                if (module == null) {
-                    serial += "•null";
-                    continue;
-                }
-                else {
-                    serial += $"•{module.Serialise()}";
-                }
+        internal void Save() {
+            EMUAdditions.CustomData.Update(instanceId, "red", red);
+            EMUAdditions.CustomData.Update(instanceId, "green", green);
+            EMUAdditions.CustomData.Update(instanceId, "blue", blue);
+
+            EMUAdditions.CustomData.Update(instanceId, "numSpeedUpgrades", numSpeedUpgrades);
+            EMUAdditions.CustomData.Update(instanceId, "numStackUpgrades", numStackUpgrades);
+            EMUAdditions.CustomData.Update(instanceId, "numRangeUpgrades", numRangeUpgrades);
+            EMUAdditions.CustomData.Update(instanceId, "infiniteRangeUpgrade", infiniteRangeUpgrade);
+
+            for(int i = 0; i < 8; i++) {
+                string serialised = modules[i] == null ? "null" : modules[i].Serialise();
+                EMUAdditions.CustomData.Update(instanceId, $"module#{i}", serialised);
             }
 
-            return serial;
-        }
+            EMUAdditions.CustomData.Update(instanceId, "buffer.id", buffer.id);
+            EMUAdditions.CustomData.Update(instanceId, "buffer.count", buffer.count);
+            EMUAdditions.CustomData.Update(instanceId, "buffer.maxStack", buffer.maxStack);
 
-        internal void Save() {
-            EMUAdditions.CustomData.Update(instanceId, "serialised", Serialise());
+            EMUAdditions.CustomData.Update(instanceId, "activeSlots", string.Join(",", activeSlots));
+            EMUAdditions.CustomData.Update(instanceId, "currentModuleIndex", currentModuleIndex);
+
+            EMUAdditions.CustomData.Update(instanceId, "sUntilNextTask", sUntilNextTask);
+            EMUAdditions.CustomData.Update(instanceId, "sSinceLastLaser", sSinceLastLaser);
+            EMUAdditions.CustomData.Update(instanceId, "lastTaskSuccessfull", lastTaskSuccessful);
         }
 
         internal void Load() {
-            string serialised = EMUAdditions.CustomData.Get<string>(instanceId, "serialised");
-            string[] moduleSerials = serialised.Split('•');
-            string nodeSerial = moduleSerials[0];
-            moduleSerials = moduleSerials.RemoveAt(0);
+            Dictionary<string, object> savedFields = EMUAdditions.CustomData.GetAll(instanceId);
 
-            string[] nodeParts = nodeSerial.Split('/');
-            red = int.Parse(nodeParts[0]);
-            green = int.Parse(nodeParts[1]);
-            blue = int.Parse(nodeParts[2]);
+            Red = (int)savedFields["red"];
+            Green = (int)savedFields["green"];
+            Blue = (int)savedFields["blue"];
 
-            string[] centerParts = nodeParts[3].Replace("(", "").Replace(")", "").Replace(" ", "").Split(',');
-            center = new Vector3() {
-                x = float.Parse(centerParts[0]),
-                y = float.Parse(centerParts[1]),
-                z = float.Parse(centerParts[2])
-            };
+            numSpeedUpgrades = (int)savedFields["numSpeedUpgrades"];
+            numStackUpgrades = (int)savedFields["numStackUpgrades"];
+            numRangeUpgrades = (int)savedFields["numRangeUpgrades"];
+            infiniteRangeUpgrade = (bool)savedFields["infiniteRangeUpgrade"];
 
-            numSpeedUpgrades = int.Parse(nodeParts[4]);
-            numStackUpgrades = int.Parse(nodeParts[5]);
-            numRangeUpgrades = int.Parse(nodeParts[6]);
-            infiniteRangeUpgrade = bool.Parse(nodeParts[7]);
+            for(int i = 0; i < 8; i++) {
+                string serial = savedFields[$"module#{i}"].ToString();
+                if (serial == "null") continue;
 
-            int bufferId = int.Parse(nodeParts[8]);
-            int bufferCount = int.Parse(nodeParts[9]);
-            int bufferMaxStack = int.Parse(nodeParts[10]);
+                string type = serial.Split('/')[0];
+                switch (type) {
+                    case Names.Items.pullerModule: modules[i] = new PullerModule(serial); break;
+                    case Names.Items.pusherModule: modules[i] = new PusherModule(serial); break;
+                    case Names.Items.collectorModule: modules[i] = new CollectorModule(serial); break;
+                    case Names.Items.distributorModule: modules[i] = new DistributorModule(serial); break;
+                    case Names.Items.voidModule: modules[i] = new VoidModule(serial); break;
+                    case Names.Items.compressorModule: modules[i] = new CompressorModule(serial); break;
+                    case Names.Items.expanderModule: modules[i] = new ExpanderModule(serial); break;
+                }
+            }
+
+            int bufferId = (int)savedFields["buffer.id"];
+            int bufferCount = (int)savedFields["buffer.count"];
+            int bufferMaxStack = (int)savedFields["buffer.maxStack"];
             buffer = ResourceStack.CreateSimpleStack(bufferId, bufferCount);
             buffer.maxStack = bufferMaxStack;
 
-            string[] activeSlotStrings = nodeParts[11].Split(',');
-            foreach(string activeSlotString in activeSlotStrings) {
-                activeSlots.Add(int.Parse(activeSlotString));
+            string activeSlotsJoined = savedFields["activeSlots"].ToString();
+            if (!string.IsNullOrEmpty(activeSlotsJoined)) {
+                foreach (string activeSlotString in activeSlotsJoined.Split(',')) {
+                    activeSlots.Add(int.Parse(activeSlotString));
+                }
             }
 
-            currentModuleIndex = int.Parse(nodeParts[12]);
-            sUntilNextTask = float.Parse(nodeParts[13]);
-            sSinceLastLaser = float.Parse(nodeParts[14]);
-
-            for(int i = 0; i < 8; i++) {
-                if (moduleSerials[i] == "null") continue;
-                LoadModule(moduleSerials[i], i);
-            }
+            currentModuleIndex = (int)savedFields["currentModuleIndex"];
+            sUntilNextTask = (float)savedFields["sUntilNextTask"];
+            sSinceLastLaser = (float)savedFields["sSinceLastLaser"];
+            lastTaskSuccessful = (bool)savedFields["lastTaskSuccessfull"];
         }
 
         // Module Functions
@@ -517,7 +568,6 @@ namespace LaserLogistics
             
             if (sSinceLastLaser > LaserLogisticsPlugin.laserCooldown.Value) {
                 nextLaserColour = GetLaserColour();
-                Debug.Log($"Shooting Laser from {inventoryPos} to {center}");
                 LaserGunTool.ShowShot(new ShootInfo() {
                     origin = inventoryPos,
                     target = center,

@@ -7,135 +7,115 @@ using UnityEngine;
 
 namespace LaserLogistics
 {
-    internal static class Images {
+    internal static class Images
+    {
         internal static bool initialised = false;
 
         internal static void InitialiseStyles() {
-            // ToDo: Copy next line to OnGUI()
-            // if (!Images.initialised) Images.InitialiseStyles();
             initialised = true;
             foreach (ModImage image in modImages) {
                 image.InitialiseStyle();
             }
         }
 
-        internal static ModImage pmt = new ModImage("pmt.png", 512, 512);
+        internal static ModImage laserNode = new ModImage("LaserNode.png", 512, 512);
+        internal static ModImage pmt = new ModImage("pmt.png", 512, 249);
+        internal static ModImage qsnDownload = new ModImage("QsnDownload.png", 1024, 1024);
 
-internal static class LaserNodeGUI {
-internal static ModImage background = new ModImage("LaserNodeGUI.Background.png", 2374, 1157);
-internal static ModImage bigArrow = new ModImage("LaserNodeGUI.BigArrow.png", 340, 10);
-internal static ModImage configButton = new ModImage("LaserNodeGUI.ConfigButton.png", 30, 30);
-internal static ModImage configOverlay = new ModImage("LaserNodeGUI.ConfigOverlay.png", 372, 360);
-internal static ModImage delete = new ModImage("LaserNodeGUI.Delete.png", 34, 34);
-internal static ModImage filterButton = new ModImage("LaserNodeGUI.FilterButton.png", 70, 25);
-internal static ModImage inventoryItem = new ModImage("LaserNodeGUI.InventoryItem.png", 40, 40);
-internal static ModImage move = new ModImage("LaserNodeGUI.Move.png", 34, 34);
-internal static ModImage rangeButton = new ModImage("LaserNodeGUI.RangeButton.png", 100, 25);
-internal static ModImage shader = new ModImage("LaserNodeGUI.Shader.png", 30, 30);
-internal static ModImage shaderTile = new ModImage("LaserNodeGUI.ShaderTile.png", 512, 512);
+        internal static class LaserNodeGUI
+        {
+            internal static ModImage background = new ModImage("LaserNodeGUI.Background.png", 2374, 1157);
+            internal static ModImage bigArrow = new ModImage("LaserNodeGUI.BigArrow.png", 340, 10);
+            internal static ModImage configButton = new ModImage("LaserNodeGUI.ConfigButton.png", 30, 30);
+            internal static ModImage configOverlay = new ModImage("LaserNodeGUI.ConfigOverlay.png", 372, 360);
+            internal static ModImage delete = new ModImage("LaserNodeGUI.Delete.png", 34, 34);
+            internal static ModImage filterButton = new ModImage("LaserNodeGUI.FilterButton.png", 70, 25);
+            internal static ModImage inventoryItem = new ModImage("LaserNodeGUI.InventoryItem.png", 40, 40);
+            internal static ModImage move = new ModImage("LaserNodeGUI.Move.png", 34, 34);
+            internal static ModImage rangeButton = new ModImage("LaserNodeGUI.RangeButton.png", 100, 25);
+            internal static ModImage shader = new ModImage("LaserNodeGUI.Shader.png", 30, 30);
+            internal static ModImage shaderTile = new ModImage("LaserNodeGUI.ShaderTile.png", 512, 512);
 
-internal static class Icons {
-internal static ModImage delete = new ModImage("LaserNodeGUI.Icons.Delete.png", 20, 20);
-internal static ModImage move = new ModImage("LaserNodeGUI.Icons.Move.png", 20, 20);
-internal static ModImage settings = new ModImage("LaserNodeGUI.Icons.Settings.png", 20, 20);
-}
-}
+            internal static class Icons
+            {
+                internal static ModImage delete = new ModImage("LaserNodeGUI.Icons.Delete.png", 20, 20);
+                internal static ModImage move = new ModImage("LaserNodeGUI.Icons.Move.png", 20, 20);
+                internal static ModImage settings = new ModImage("LaserNodeGUI.Icons.Settings.png", 20, 20);
+            }
+        }
 
-internal static class Modules {
-internal static ModImage collectorModule = new ModImage("Modules.CollectorModule.png", 512, 512);
-internal static ModImage compressorModule = new ModImage("Modules.CompressorModule.png", 512, 512);
-internal static ModImage distributorModule = new ModImage("Modules.DistributorModule.png", 512, 512);
-internal static ModImage expanderModule = new ModImage("Modules.ExpanderModule.png", 512, 512);
-internal static ModImage pullerModule = new ModImage("Modules.PullerModule.png", 512, 512);
-internal static ModImage pusherModule = new ModImage("Modules.PusherModule.png", 512, 512);
-internal static ModImage voidModule = new ModImage("Modules.VoidModule.png", 512, 512);
+        internal static class Modules
+        {
+            internal static ModImage collectorModule = new ModImage("Modules.CollectorModule.png", 512, 512);
+            internal static ModImage compressorModule = new ModImage("Modules.CompressorModule.png", 512, 512);
+            internal static ModImage distributorModule = new ModImage("Modules.DistributorModule.png", 512, 512);
+            internal static ModImage expanderModule = new ModImage("Modules.ExpanderModule.png", 512, 512);
+            internal static ModImage pullerModule = new ModImage("Modules.PullerModule.png", 512, 512);
+            internal static ModImage pusherModule = new ModImage("Modules.PusherModule.png", 512, 512);
+            internal static ModImage voidModule = new ModImage("Modules.VoidModule.png", 512, 512);
+        }
 
-internal static class Dim {
-internal static ModImage collector = new ModImage("Modules.Dim.Collector.png", 30, 30);
-internal static ModImage compressor = new ModImage("Modules.Dim.Compressor.png", 30, 30);
-internal static ModImage distributor = new ModImage("Modules.Dim.Distributor.png", 30, 30);
-internal static ModImage expander = new ModImage("Modules.Dim.Expander.png", 30, 30);
-internal static ModImage pullerModule = new ModImage("Modules.Dim.PullerModule.png", 30, 30);
-internal static ModImage pusherModule = new ModImage("Modules.Dim.PusherModule.png", 30, 30);
-internal static ModImage voidModule = new ModImage("Modules.Dim.VoidModule.png", 30, 30);
-}
-}
+        internal static class PMTGUI
+        {
+            internal static ModImage background = new ModImage("PMTGUI.Background.png", 443, 286);
+            internal static ModImage delete = new ModImage("PMTGUI.Delete.png", 20, 20);
+            internal static ModImage entry = new ModImage("PMTGUI.Entry.png", 428, 25);
+            internal static ModImage move = new ModImage("PMTGUI.Move.png", 20, 20);
+            internal static ModImage positionSaved = new ModImage("PMTGUI.PositionSaved.png", 443, 286);
+            internal static ModImage tablet = new ModImage("PMTGUI.Tablet.png", 785, 450);
+            internal static ModImage tabletOnly = new ModImage("PMTGUI.TabletOnly.png", 501, 345);
+            internal static ModImage thumb = new ModImage("PMTGUI.Thumb.png", 785, 450);
+        }
 
-internal static class PMTGUI {
-internal static ModImage background = new ModImage("PMTGUI.Background.png", 443, 286);
-internal static ModImage delete = new ModImage("PMTGUI.Delete.png", 20, 20);
-internal static ModImage entry = new ModImage("PMTGUI.Entry.png", 428, 25);
-internal static ModImage move = new ModImage("PMTGUI.Move.png", 20, 20);
-internal static ModImage positionSaved = new ModImage("PMTGUI.PositionSaved.png", 443, 286);
-internal static ModImage tablet = new ModImage("PMTGUI.Tablet.png", 785, 450);
-internal static ModImage tabletOnly = new ModImage("PMTGUI.TabletOnly.png", 501, 345);
-internal static ModImage thumb = new ModImage("PMTGUI.Thumb.png", 785, 450);
-}
-
-internal static class Upgrades {
-internal static ModImage infiniteRangeUpgrade = new ModImage("Upgrades.InfiniteRangeUpgrade.png", 512, 512);
-internal static ModImage rangeUpgrade = new ModImage("Upgrades.RangeUpgrade.png", 512, 512);
-internal static ModImage speedUpgrade = new ModImage("Upgrades.SpeedUpgrade.png", 512, 512);
-internal static ModImage stackUpgrade = new ModImage("Upgrades.StackUpgrade.png", 512, 512);
-
-internal static class Dim {
-internal static ModImage infiniteRange = new ModImage("Upgrades.Dim.InfiniteRange.png", 30, 30);
-internal static ModImage range = new ModImage("Upgrades.Dim.Range.png", 30, 30);
-internal static ModImage speedUpgrade = new ModImage("Upgrades.Dim.SpeedUpgrade.png", 30, 30);
-internal static ModImage stack = new ModImage("Upgrades.Dim.Stack.png", 30, 30);
-}
-}
+        internal static class Upgrades
+        {
+            internal static ModImage infiniteRangeUpgrade = new ModImage("Upgrades.InfiniteRangeUpgrade.png", 512, 512);
+            internal static ModImage rangeUpgrade = new ModImage("Upgrades.RangeUpgrade.png", 512, 512);
+            internal static ModImage speedUpgrade = new ModImage("Upgrades.SpeedUpgrade.png", 512, 512);
+            internal static ModImage stackUpgrade = new ModImage("Upgrades.StackUpgrade.png", 512, 512);
+        }
 
         private static List<ModImage> modImages = new List<ModImage>() {
+            laserNode,
             pmt,
-			LaserNodeGUI.background,
-			LaserNodeGUI.bigArrow,
-			LaserNodeGUI.configButton,
-			LaserNodeGUI.configOverlay,
-			LaserNodeGUI.delete,
-			LaserNodeGUI.filterButton,
-			LaserNodeGUI.inventoryItem,
-			LaserNodeGUI.move,
-			LaserNodeGUI.rangeButton,
-			LaserNodeGUI.shader,
-			LaserNodeGUI.shaderTile,
-			LaserNodeGUI.Icons.delete,
-			LaserNodeGUI.Icons.move,
-			LaserNodeGUI.Icons.settings,
-			Modules.collectorModule,
-			Modules.compressorModule,
-			Modules.distributorModule,
-			Modules.expanderModule,
-			Modules.pullerModule,
-			Modules.pusherModule,
-			Modules.voidModule,
-			Modules.Dim.collector,
-			Modules.Dim.compressor,
-			Modules.Dim.distributor,
-			Modules.Dim.expander,
-			Modules.Dim.pullerModule,
-			Modules.Dim.pusherModule,
-			Modules.Dim.voidModule,
-			PMTGUI.background,
-			PMTGUI.delete,
-			PMTGUI.entry,
-			PMTGUI.move,
-			PMTGUI.positionSaved,
-			PMTGUI.tablet,
-			PMTGUI.tabletOnly,
-			PMTGUI.thumb,
-			Upgrades.infiniteRangeUpgrade,
-			Upgrades.rangeUpgrade,
-			Upgrades.speedUpgrade,
-			Upgrades.stackUpgrade,
-			Upgrades.Dim.infiniteRange,
-			Upgrades.Dim.range,
-			Upgrades.Dim.speedUpgrade,
-			Upgrades.Dim.stack 
+            qsnDownload,
+            LaserNodeGUI.background,
+            LaserNodeGUI.bigArrow,
+            LaserNodeGUI.configButton,
+            LaserNodeGUI.configOverlay,
+            LaserNodeGUI.delete,
+            LaserNodeGUI.filterButton,
+            LaserNodeGUI.inventoryItem,
+            LaserNodeGUI.move,
+            LaserNodeGUI.rangeButton,
+            LaserNodeGUI.shader,
+            LaserNodeGUI.shaderTile,
+            LaserNodeGUI.Icons.delete,
+            LaserNodeGUI.Icons.move,
+            LaserNodeGUI.Icons.settings,
+            Modules.collectorModule,
+            Modules.compressorModule,
+            Modules.distributorModule,
+            Modules.expanderModule,
+            Modules.pullerModule,
+            Modules.pusherModule,
+            Modules.voidModule,
+            PMTGUI.background,
+            PMTGUI.delete,
+            PMTGUI.entry,
+            PMTGUI.move,
+            PMTGUI.positionSaved,
+            PMTGUI.tablet,
+            PMTGUI.tabletOnly,
+            PMTGUI.thumb,
+            Upgrades.infiniteRangeUpgrade,
+            Upgrades.rangeUpgrade,
+            Upgrades.speedUpgrade,
+            Upgrades.stackUpgrade
         };
     }
 
-    internal class ModImage 
+    internal class ModImage
     {
         internal float width;
         internal float height;

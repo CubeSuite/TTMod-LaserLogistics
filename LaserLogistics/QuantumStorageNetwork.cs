@@ -7,6 +7,7 @@ using System.Diagnostics.PerformanceData;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace LaserLogistics
 {
@@ -14,6 +15,7 @@ namespace LaserLogistics
     {
         // Objects & Variables
         private static Dictionary<int, int> items = new Dictionary<int, int>();
+        private static Unlock qsnDownloadUnlock;
 
         // Internal Functions
 
@@ -37,6 +39,32 @@ namespace LaserLogistics
         
         internal static bool IsItemInNetwork(int id) {
             return items.ContainsKey(id);
+        }
+
+        internal static void Download() {
+            if (!EMU.LoadingStates.hasTechTreeStateLoaded) return;
+            if (!EMU.LoadingStates.hasGameLoaded) return;
+
+            if (qsnDownloadUnlock == null) qsnDownloadUnlock = EMU.Unlocks.GetUnlockByName(Names.Unlocks.qsnDownload);
+            if (!TechTreeState.instance.IsUnlockActive(qsnDownloadUnlock.uniqueId)) return;
+
+            List<KeyValuePair<int, int>> queuedTransfers = new List<KeyValuePair<int, int>>();
+
+            foreach(KeyValuePair<int, int> pair in items) {
+                ResourceInfo info = SaveState.GetResInfoFromId(pair.Key);
+                if (!(info is BuilderInfo)) continue;
+
+                int missingFromInventory = info.maxStackCount - Player.instance.inventory.GetResourceCount(info);
+                if (missingFromInventory <= 0) continue;
+
+                int toRemove = Mathf.Min(missingFromInventory, GetCountOfItem(info.uniqueId));
+                queuedTransfers.Add(new KeyValuePair<int, int>(info.uniqueId, toRemove));
+            }
+
+            foreach(KeyValuePair<int, int> pair in queuedTransfers) {
+                int removed = RemoveItems(pair.Key, pair.Value);
+                Player.instance.inventory.AddResources(pair.Key, removed);
+            }
         }
 
         internal static int RemoveItems(int id, int requestedAmount) {

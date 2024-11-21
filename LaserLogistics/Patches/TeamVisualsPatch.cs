@@ -13,6 +13,7 @@ namespace LaserLogistics.Patches
         [HarmonyPostfix]
         static void OverwriteColour(ref NexusDefinition.TeamVisuals __result) {
             __result.PrimaryColour = LaserNode.nextLaserColour;
+            __result.SecondaryColour = LaserNode.nextLaserColour;
         }
     }
 }

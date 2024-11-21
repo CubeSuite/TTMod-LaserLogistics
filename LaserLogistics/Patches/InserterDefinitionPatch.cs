@@ -19,8 +19,6 @@ namespace LaserLogistics.Patches
         static void CreateNode(InserterDefinition __instance, MachineInstanceRef<InserterInstance> instRef) {
             if (__instance.displayName != Names.Items.laserNode) return;
             LaserNodeManager.CreateNewNode(instRef);
-
-            __instance.visualsPrefab.transform.localScale = Vector3.zero;
         }
 
         [HarmonyPatch(typeof(MachineDefinition<InserterInstance, InserterDefinition>), "OnDeconstruct")]

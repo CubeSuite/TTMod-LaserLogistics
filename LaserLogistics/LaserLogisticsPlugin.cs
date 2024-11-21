@@ -43,9 +43,9 @@ namespace LaserLogistics
             ApplyPatches();
             LoadPrefabs();
 
-            EMU.Events.GameDefinesLoaded += OnGameDefinesLoaded;
             EMU.Events.SaveStateLoaded += OnSaveStateLoaded;
             EMU.Events.GameSaved += OnGameSaved;
+            EMU.Events.GameUnloaded += LaserNodeManager.OnGameUnloaded;
             CaspuinoxGUI.ReadyForGUI += OnReadyForGUI;
 
             ContentAdder.AddHeaders();
@@ -62,10 +62,10 @@ namespace LaserLogistics
             ContentAdder.AddCompressorModule();
             ContentAdder.AddExpanderModule();
 
-            ContentAdder.AddRangeUpgrade();
-            ContentAdder.AddInfiniteRangeUpgrade();
             ContentAdder.AddSpeedUpgrade();
             ContentAdder.AddStackUpgrade();
+            ContentAdder.AddRangeUpgrade();
+            ContentAdder.AddInfiniteRangeUpgrade();
 
             Logger.LogInfo($"PluginName: {PluginName}, VersionString: {VersionString} is loaded.");
             Log = Logger;
@@ -73,9 +73,9 @@ namespace LaserLogistics
 
         private void Update() {
             NewLaserNodeGUI.HandleKeyPresses();
-            LaserNodeGUI.TrackTime(Time.deltaTime);
             NewLaserNodeGUI.TrackTime(Time.deltaTime);
             PositionMemoryTablet.instance.sSincePositionAdded += Time.deltaTime;
+            QuantumStorageNetwork.Download();
         }
 
         private void LateUpdate() {
@@ -85,7 +85,6 @@ namespace LaserLogistics
         private void OnGUI() {
             if (!Images.initialised) Images.InitialiseStyles();
             if (!EMU.LoadingStates.hasGameLoaded) return;
-            LaserNodeGUI.Draw();
             PositionMemoryTabletGUI.Draw();
             NewLaserNodeGUI.DrawItemInHand();
         }
@@ -94,10 +93,6 @@ namespace LaserLogistics
 
         private void OnReadyForGUI() {
             NewLaserNodeGUI.CreateWindow();
-        }
-
-        private void OnGameDefinesLoaded() {
-            LaserNodeGUI.LoadResourceInfosToCache();
         }
 
         private void OnSaveStateLoaded(object sender, EventArgs e) {
@@ -116,7 +111,7 @@ namespace LaserLogistics
 
             QuantumStorageNetwork.Load();
             PositionMemoryTablet.instance.Load();
-            //LaserNodeManager.Load();
+            LaserNodeManager.Load();
         }
 
         private void OnGameSaved(object sender, EventArgs e) {
@@ -129,7 +124,7 @@ namespace LaserLogistics
 
         private void CreateConfigEntries() {
             showLasers = Config.Bind("General", "Show Lasers", true, new ConfigDescription("When enabled, a laser is fired between a Node and an inventory when items are transferred"));
-            laserCooldown = Config.Bind("General", "Laser Cooldown", 0.1f, new ConfigDescription("The amount of seconds that must between lasers firing (only affects visuals / audio)", new AcceptableValueRange<float>(0f, 1f)));
+            laserCooldown = Config.Bind("General", "Laser Cooldown", 0.1f, new ConfigDescription("The amount of seconds that must between lasers firing (only affects visuals / audio)", new AcceptableValueRange<float>(0f, 120f)));
             discoMode = Config.Bind("General", "Disco Mode", false, new ConfigDescription("When enabled, each laser is fired with a random colour"));
             defaultRed = Config.Bind("General", "Default Red", 255, new ConfigDescription("New Nodes will have their Red value set to this", new AcceptableValueRange<int>(0, 255)));
             defaultGreen = Config.Bind("General", "Default Green", 0, new ConfigDescription("New Nodes will have their Green value set to this", new AcceptableValueRange<int>(0, 255)));
@@ -137,6 +132,7 @@ namespace LaserLogistics
         }
 
         private void ApplyPatches() {
+            Harmony.CreateAndPatchAll(typeof(FlowManagerPatch));
             Harmony.CreateAndPatchAll(typeof(FilterInserterUIPatch));
             Harmony.CreateAndPatchAll(typeof(InserterDefinitionPatch));
             Harmony.CreateAndPatchAll(typeof(InserterInstancePatch));
